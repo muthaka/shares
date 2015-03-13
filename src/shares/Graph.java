@@ -4,6 +4,12 @@
  */
 package shares;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import net.proteanit.sql.DbUtils;
 
 
 
@@ -12,7 +18,11 @@ package shares;
  * @author MUTHAKA
  */
 public class Graph extends javax.swing.JFrame {
-
+private Connection con;
+private Statement st;
+private ResultSet cr;
+String currentquery, current;
+String share, month;
     /**
      * Creates new form Graph
      */
@@ -29,21 +39,912 @@ public class Graph extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        cmbmonth = new javax.swing.JComboBox();
+        cmbshare = new javax.swing.JComboBox();
+        btnload = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblshare = new javax.swing.JTable();
+        btnchart = new javax.swing.JButton();
+        btnlinegraph = new javax.swing.JButton();
+        btnbargraph = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        cmbmonth.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "june2014", "july2014", "august2014", "september2014", "october2014", "november2014", "december2014", "january2015", "february2015", "march2015", "april2015", "may2015", "june2015", "july2015", "august2015", "september2015", "november2015", "december2015" }));
+
+        cmbshare.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CIC_Insurance", "Eveready_EA", "Express", "Home_Afrika_Ltd", "Kengen", "Kenolkobil", "Kenya_Airways", "Kenya_Orchads", "Marshalls_EA", "Mumias_Sugar", "Olympia_Capital", "Safaricom_Limited", "Sameer_Africa" }));
+
+        btnload.setText("LOAD");
+        btnload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnloadActionPerformed(evt);
+            }
+        });
+
+        tblshare.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblshare);
+
+        btnchart.setText("PIE CHART");
+        btnchart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnchartActionPerformed(evt);
+            }
+        });
+
+        btnlinegraph.setText("LINE GRAPH");
+        btnlinegraph.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnlinegraphActionPerformed(evt);
+            }
+        });
+
+        btnbargraph.setText("BAR GRAPH");
+        btnbargraph.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnbargraphActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cmbmonth, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmbshare, 0, 154, Short.MAX_VALUE)
+                    .addComponent(btnload, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnlinegraph, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnchart, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnbargraph, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(60, 60, 60))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(54, 54, 54)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnchart)
+                        .addGap(30, 30, 30)
+                        .addComponent(btnlinegraph)
+                        .addGap(40, 40, 40)
+                        .addComponent(btnbargraph))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cmbmonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cmbshare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(87, 87, 87)
+                        .addComponent(btnload)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnchartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnchartActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnchartActionPerformed
+
+    private void btnbargraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbargraphActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnbargraphActionPerformed
+
+    private void btnloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnloadActionPerformed
+        // TODO add your handling code here:
+        try
+        {
+            /* connecting to the database */
+           Class.forName("com.mysql.jdbc.Driver");
+           con = DriverManager.getConnection("jdbc:mysql://localhost:3306/shares","root","root");
+           st = con.createStatement();
+           share = cmbshare.getSelectedItem().toString();
+           month = cmbmonth.getSelectedItem().toString();
+           
+           
+           
+           if (month.equals("june2014"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM june2014";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM june2014";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM june2014";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM june2014";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM june2014";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM june2014";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM june2014";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM june2014";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM june2014";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM june2014";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM june2014";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM june2014";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM june2014";
+               }
+               
+           }
+           if (month.equals("july2014"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM july2014";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM july2014";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM july2014";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM july2014";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM july2014";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM july2014";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM july2014";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM july2014";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM july2014";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM july2014";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM july2014";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM july2014";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM july2014";
+               }
+           }
+           if (month.equals("august2014"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM august2014";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM august2014";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM august2014";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM august2014";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM august2014";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM august2014";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM august2014";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM august2014";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM august2014";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM august2014";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM august2014";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM august2014";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM august2014";
+               }
+           }
+           if (month.equals("september2014"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM september2014";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM september2014";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM september2014";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM september2014";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM september2014";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM september2014";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM september2014";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM september2014";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM september2014";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM september2014";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM september2014";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM september2014";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM september2014";
+               }
+           }
+           if (month.equals("october2014"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM october2014";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM october2014";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM october2014";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM october2014";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM october2014";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM october2014";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM october2014";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM october2014";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM october2014";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM october2014";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM october2014";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM october2014";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM october2014";
+               }
+           }
+           if (month.equals("november2014"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM november2014";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM november2014";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM november2014";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM november2014";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM november2014";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM november2014";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM november2014";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM november2014";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM november2014";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM november2014";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM november2014";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM november2014";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM november2014";
+               }
+           }
+           if (month.equals("december2014"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM december2014";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM december2014";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM december2014";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM december2014";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM december2014";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM december2014";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM december2014";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM december2014";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM december2014";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM december2014";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM december2014";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM december2014";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM december2014";
+               }
+           }
+           if (month.equals("january2015"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM january2015";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM january2015";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM january2015";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM january2015";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM january2015";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM january2015";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM january2015";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM january2015";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM january2015";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM january2015";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM january2015";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM january2015";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM january2015";
+               }
+           }
+           if (month.equals("february2015"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM february2015";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM february2015";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM february2015";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM february2015";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM february2015";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM february2015";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM february2015";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM february2015";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM february2015";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM february2015";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM february2015";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM february2015";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM february2015";
+               }
+           }
+           if (month.equals("march2015"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM march2015";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM march2015";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM march2015";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM march2015";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM march2015";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM march2015";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM march2015";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM march2015";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM march2015";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM march2015";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM march2015";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM march2015";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM march2015";
+               }
+           }
+           if (month.equals("april2015"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM april2015";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM april2015";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM april2015";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM april2015";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM april2015";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM april2015";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM april2015";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM april2015";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM april2015";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM april2015";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM april2015";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM april2015";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM april2015";
+               }
+           }
+           if (month.equals("may2015"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM may2015";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM may2015";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM may2015";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM may2015";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM may2015";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM may2015";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM may2015";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM may2015";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM may2015";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM may2015";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM may2015";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM may2015";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM may2015";
+               }
+           }
+           if (month.equals("june2015"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM june2015";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM june2015";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM june2015";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM june2015";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM june2015";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM june2015";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM june2015";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM june2015";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM june2015";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM june2015";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM june2015";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM june2015";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM june2015";
+               }
+           }
+           if (month.equals("july2015"))
+           {
+               if (share.equals("CIC_Insurance"))
+               {
+                   currentquery = "SELECT Day,CIC_Insurance FROM july2015";
+               }
+               if (share.equals("Eveready_EA"))
+               {
+                   currentquery = "SELECT Day,Eveready_EA FROM july2015";
+               }
+               if (share.equals("Express"))
+               {
+                   currentquery = "SELECT Day,Express FROM july2015";
+               }
+               if (share.equals("Home_Afrika_Ltd"))
+               {
+                   currentquery = "SELECT Day,Home_Afrika_Ltd FROM july2015";
+               }
+               if (share.equals("Kengen"))
+               {
+                   currentquery = "SELECT Day,Kengen FROM july2015";
+               }
+               if (share.equals("Kenolkobil"))
+               {
+                   currentquery = "SELECT Day,Kenolkobil FROM july2015";
+               }
+               if (share.equals("Kenya_Airways"))
+               {
+                   currentquery = "SELECT Day,Kenya_Airways FROM july2015";
+               }
+               if (share.equals("Kenya_Orchads"))
+               {
+                   currentquery = "SELECT Day,Kenya_Orchads FROM july2015";
+               }
+               if (share.equals("Marshalls_EA"))
+               {
+                   currentquery = "SELECT Day,Marshalls_EA FROM july2015";
+               }
+               if (share.equals("Mumias_Sugar"))
+               {
+                   currentquery = "SELECT Day,Mumias_Sugar FROM july2015";
+               }
+               if (share.equals("Olympia_Capital"))
+               {
+                   currentquery = "SELECT Day,Olympia_Capital FROM july2015";
+               }
+               if (share.equals("Safaricom_Limited"))
+               {
+                   currentquery = "SELECT Day,Safaricom_Limited FROM july2015";
+               }
+               if (share.equals("Sameer_Africa"))
+               {
+                   currentquery = "SELECT Day,Sameer_Africa FROM july2015";
+               }
+           }
+           
+           cr = st.executeQuery(currentquery);
+           
+        
+        }
+        catch(ClassNotFoundException | SQLException ex)
+        {
+            System.out.println(ex);
+        }
+        tblshare.setModel(DbUtils.resultSetToTableModel(cr));
+    }//GEN-LAST:event_btnloadActionPerformed
+
+    private void btnlinegraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlinegraphActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnlinegraphActionPerformed
 
     /**
      * @param args the command line arguments
@@ -75,10 +976,22 @@ public class Graph extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Graph().setVisible(true);
+                
+                Graph gp = new Graph();
+                gp.setVisible(true);
+                gp.setLocationRelativeTo(null);
+                
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnbargraph;
+    private javax.swing.JButton btnchart;
+    private javax.swing.JButton btnlinegraph;
+    private javax.swing.JButton btnload;
+    private javax.swing.JComboBox cmbmonth;
+    private javax.swing.JComboBox cmbshare;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblshare;
     // End of variables declaration//GEN-END:variables
 }

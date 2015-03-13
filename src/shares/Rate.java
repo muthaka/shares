@@ -246,7 +246,7 @@ private ResultSet cr;
             }
             if (p < minimum)
             {
-               minimum=p; 
+               minimum=sum; 
             }
         }
              Double p = Double.parseDouble(current);

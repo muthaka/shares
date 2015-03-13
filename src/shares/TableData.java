@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import net.proteanit.sql.DbUtils;
 
 /**
  *
@@ -36,11 +37,15 @@ String share, month;
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
         jLabel1 = new javax.swing.JLabel();
         combomonth = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
-        comboshare = new javax.swing.JComboBox();
         btnshowtbl = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblshare = new javax.swing.JTable();
+
+        jRadioButtonMenuItem1.setSelected(true);
+        jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -49,10 +54,6 @@ String share, month;
 
         combomonth.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "june2014", "july2014", "august2014", "september2014", "october2014", "november2014", "december2014", "january2015", "february2015", "march2015", "april2015", "may2015", "june2015", "july2015", "august2015", "september2015", "november2015", "december2015" }));
 
-        jLabel2.setText("TYPE OF SHARE");
-
-        comboshare.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All", "CIC_Insurance", "Eveready_EA", "Express", "Home_Afrika_Ltd", "Kengen", "Kenolkobil", "Kenya_Airways", "Kenya_Orchads", "Marshalls_EA", "Mumias_Sugar", "Olympia_Capital", "Safaricom_Limited", "Sameer_Africa" }));
-
         btnshowtbl.setText("SHOW TABLE");
         btnshowtbl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -60,38 +61,49 @@ String share, month;
             }
         });
 
+        tblshare.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblshare);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnshowtbl)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(80, 80, 80)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(comboshare, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(combomonth, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(114, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)
+                        .addGap(35, 35, 35)
+                        .addComponent(combomonth, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnshowtbl)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(50, 50, 50)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(combomonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(46, 46, 46)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(comboshare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44)
-                .addComponent(btnshowtbl)
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(combomonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(49, 49, 49)
+                        .addComponent(btnshowtbl)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -105,92 +117,101 @@ String share, month;
            Class.forName("com.mysql.jdbc.Driver");
            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/shares","root","root");
            st = con.createStatement();
-           share = comboshare.getSelectedItem().toString();
+           
            month = combomonth.getSelectedItem().toString();
            
+           
+           
            if (month.equals("june2014"))
-           {
-               currentquery = "SELECT * FROM june2014";
+           {  
+                   currentquery = "SELECT * FROM june2014";
            }
            if (month.equals("july2014"))
            {
-               currentquery = "SELECT * FROM july2014";
+            
+                   currentquery = "SELECT * FROM july2014";
+              
            }
            if (month.equals("august2014"))
            {
-               currentquery = "SELECT * FROM august2014";
+               
+                   currentquery = "SELECT * FROM august2014";
+               
+               
            }
            if (month.equals("september2014"))
            {
-               currentquery = "SELECT * FROM september2014";
+               
+                   currentquery = "SELECT * FROM september2014";
+               
            }
            if (month.equals("october2014"))
            {
-               currentquery = "SELECT * FROM october2014";
+               
+                   currentquery = "SELECT * FROM october2014";
+               
            }
            if (month.equals("november2014"))
            {
-               currentquery = "SELECT * FROM november2014";
+               
+                   currentquery = "SELECT * FROM november2014";
+               
            }
            if (month.equals("december2014"))
            {
-               currentquery = "SELECT * FROM december2014";
+              
+                   currentquery = "SELECT * FROM december2014";
+               
            }
            if (month.equals("january2015"))
            {
-               currentquery = "SELECT * FROM january2015";
+              
+                   currentquery = "SELECT * FROM january2015";
+              
            }
            if (month.equals("february2015"))
            {
-               currentquery = "SELECT * FROM february2015";
+              
+                   currentquery = "SELECT * FROM february2015";
+              
            }
            if (month.equals("march2015"))
            {
-               currentquery = "SELECT * FROM march2015";
+              
+                   currentquery = "SELECT * FROM march2015";
+              
            }
            if (month.equals("april2015"))
            {
-               currentquery = "SELECT * FROM april2015";
+                 currentquery = "SELECT * FROM april2015";
+              
            }
            if (month.equals("may2015"))
            {
-               currentquery = "SELECT * FROM may2015";
+                currentquery = "SELECT * FROM may2015";
+              
            }
            if (month.equals("june2015"))
            {
-               currentquery = "SELECT * FROM june2015";
+              
+                  currentquery = "SELECT * FROM june2015";
+               
            }
            if (month.equals("july2015"))
            {
-               currentquery = "SELECT * FROM july2015";
+                currentquery = "SELECT * FROM july2015";
+              
            }
            
            cr = st.executeQuery(currentquery);
            
-        if (share.equals("ALL"))
-        {
-            System.out.println("welcome");
-        }
-        else  
-                {
-            /*while loop that ends by selecting the last value */
-                    while(cr.next())
-                   {  
-                     current = cr.getString(share);
-                     Double p = Double.parseDouble(current);
-            
-            
-                   }
-             
-                   System.out.println(current);
-                   
-                }
-             
+        
         }
         catch(ClassNotFoundException | SQLException ex)
         {
             System.out.println(ex);
         }
+        tblshare.setModel(DbUtils.resultSetToTableModel(cr));
     }//GEN-LAST:event_btnshowtblActionPerformed
 
     /**
@@ -232,8 +253,9 @@ String share, month;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnshowtbl;
     private javax.swing.JComboBox combomonth;
-    private javax.swing.JComboBox comboshare;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblshare;
     // End of variables declaration//GEN-END:variables
 }
